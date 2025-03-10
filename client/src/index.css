@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'Font1';
+    src: url('/Fonts/Font1.ttf') format('truetype');
+}
