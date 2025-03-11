@@ -68,4 +68,37 @@ userRoutes.get("/verify", authMiddleware , async (req, res) => {
     }
 });
 
+userRoutes.post("/admin/signin", async (req, res) => {
+    try {
+        const { email , password } = req.body;
+
+        let user = await prisma.user.findUnique({
+            where: { email , password }
+        });
+        if(!user) {
+            throw new Error("user not found!");
+        }
+        const curr_token = jwt.sign(
+            { 
+                id : user.id
+            }, 
+            JWT_SECRET,
+            {
+                expiresIn : '12h'
+            }
+        );
+
+        res.status(200).json({
+            success : true,
+            token : curr_token , 
+            email : user.email ,
+            isAdmin : user.isAdmin
+        });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: error.message});
+    }
+})
+
 export default userRoutes;
